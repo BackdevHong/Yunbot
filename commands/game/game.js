@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require('discord.js');
 const fs = require('node:fs');
+const path = require('node:path')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -53,7 +54,7 @@ module.exports = {
       const gameEndDate = interaction.options.getString("종료날짜")
 
       if (gameName && gameUserCount && gameEndDate) {
-        const assetsPath = '../../assets';
+        const assetsPath = path.resolve('assets');
         const assetsFiles = fs
           .readdirSync(assetsPath)
           .filter((file) => file.endsWith('.png'));
