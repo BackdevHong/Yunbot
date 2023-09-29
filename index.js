@@ -19,10 +19,9 @@ const eventFiles = fs
 
 for (const file of eventFiles) {
   const filePath = `./${eventsPath}/${file}`;
-  const event = import(filePath);
-  if (event.once == true) {
+  const event = require(filePath);
+  if (event.once === true) {
     client.once(event.name, (...args) => event.execute(...args));
-    // eslint-disable-next-line brace-style
   } else {
     client.on(event.name, (...args) => event.execute(...args));
   }
