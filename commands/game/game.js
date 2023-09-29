@@ -1,6 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path')
+const dayjs = require('dayjs')
+const GameOpens = require('../../schemas/gameopens.js')
+const CurrentGameUsers = require('../../schemas/currentgameusers.js')
+const RealGames = require('../../schemas/realgame.js')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -54,6 +58,11 @@ module.exports = {
       const gameEndDate = interaction.options.getString("종료날짜")
 
       if (gameName && gameUserCount && gameEndDate) {
+        const date = dayjs(gameEndDate)
+        if (date.format() === "Invalid Date") {
+          interaction.reply({content: "올바른 날짜 형식이 아닙니다. 다시 시도해주세요.", ephemeral: true})
+          return;
+        }
         const assetsPath = path.resolve('assets');
         const assetsFiles = fs
           .readdirSync(assetsPath)
@@ -62,6 +71,12 @@ module.exports = {
         const randomFile = assetsFiles[Math.floor(Math.random() * assetsFiles.length)]
         const file = new AttachmentBuilder(`${assetsPath}/${randomFile}`)
 
+        const join = new ButtonBuilder()
+          .setCustomId("join")
+          .setLabel("참여")
+          .setStyle(ButtonStyle.Primary);
+
+        const row = new ActionRowBuilder().addComponents(join)
         const embed = new EmbedBuilder()
           .setColor('Random')
           .setTitle("모집 안내")
@@ -73,7 +88,27 @@ module.exports = {
           )
           .setTimestamp()
 
-        interaction.reply({embeds: [embed], files: [file]})
+        const newGame = await GameOpens.create({
+          gameType: gameName,
+          gameMaxUserCount: gameUserCount,
+          gameStopGameOpening: date,
+          
+        });
+
+        console.log(newGame)
+
+        const response = await interaction.reply({embeds: [embed], files: [file], components: [row]})
+
+        try{
+          const confirm = await response.awaitMessageComponent()
+
+          if (confirm.customId === 'join') {
+            await confirm.reply({content: "버튼을 누름!", ephemeral: true})
+          }
+        } catch(e) {
+          console.log(e)
+          await interaction.editReply({content: "ERROR", components: []})
+        }
       }
     }
   },

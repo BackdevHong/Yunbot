@@ -1,6 +1,11 @@
 const { Client, Collection, REST, Routes } = require('discord.js');
 const fs = require('node:fs');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose').default
+
+require("./schemas/gameopens")
+require('./schemas/currentgameusers')
+require("./schemas/realgame")
 
 dotenv.config();
 const token = process.env.TOKEN;
@@ -45,6 +50,14 @@ for (const category of commandsCategoryFiles) {
     commands_json.push(command.data);
   }
 }
+
+mongoose.connect(process.env.DATABASE_URL)
+  .then(() => {
+  console.log("mongoose connect")
+  })
+  .catch((err) => {
+  console.error(err)
+  })
 
 const rest = new REST({ version: '10' }).setToken(token);
 
