@@ -53,7 +53,7 @@ module.exports = {
       const gameEndDate = interaction.options.getString("종료날짜")
 
       if (gameName && gameUserCount && gameEndDate) {
-        const assetsPath = '/Users/hong-inseong/Desktop/Coding/ybot/assets';
+        const assetsPath = '../../assets';
         const assetsFiles = fs
           .readdirSync(assetsPath)
           .filter((file) => file.endsWith('.png'));
