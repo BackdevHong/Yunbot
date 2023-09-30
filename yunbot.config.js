@@ -1,10 +1,8 @@
 module.exports = {
-  apps: [
-    {
-      name: 'yunbot',
-      script: 'yarn start',
-      instances: 0,
-      exec_mode: 'cluster',
-    }
-  ]
-}
+  apps : [{
+    name      : 'yarn',
+    script    : 'yarn',
+    args      : 'start',
+    interpreter: '/bin/bash'
+  }]
+};
