@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "serve": "pm2 start --name 'yunbot' yarn -- start"
+    "serve": "pm2 start yarn -- start"
   },
   "dependencies": {
     "@prisma/client": "5.3.1",
