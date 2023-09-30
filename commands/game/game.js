@@ -1,10 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder,PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder, ComponentType } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path')
 const dayjs = require('dayjs')
-const GameOpens = require('../../schemas/gameopens.js')
-const CurrentGameUsers = require('../../schemas/currentgameusers.js')
-const RealGames = require('../../schemas/realgame.js')
+const { PrismaClient } = require('@prisma/client')
+const schedule = require('node-schedule')
+
+const prisma = new PrismaClient()
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -33,19 +34,8 @@ module.exports = {
               '모집 종료 날짜를 다음과 같은 식으로 넣어주세요. 예시 )2023/09/23',
             )
             .setRequired(true),
-        ),
-    )
-    .addSubcommand((subCC) =>
-      subCC
-        .setName('모집종료')
-        .setDescription('모집을 조기 종료합니다.')
-        .addIntegerOption((option) =>
-          option
-            .setName('모집아이디')
-            .setDescription('모집 ID를 입력해주세요.')
-            .setRequired(true),
-        ),
-    ),
+        ))
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   /**
    *
    * @param {import('discord.js').Interaction} interaction
@@ -56,6 +46,7 @@ module.exports = {
       const gameName = interaction.options.getString('게임이름')
       const gameUserCount = interaction.options.getInteger('인원수')
       const gameEndDate = interaction.options.getString("종료날짜")
+      let game_id;
 
       if (gameName && gameUserCount && gameEndDate) {
         const date = dayjs(gameEndDate)
@@ -77,37 +68,174 @@ module.exports = {
           .setStyle(ButtonStyle.Primary);
 
         const row = new ActionRowBuilder().addComponents(join)
-        const embed = new EmbedBuilder()
-          .setColor('Random')
-          .setTitle("모집 안내")
-          .setThumbnail(`attachment://${randomFile}`)
-          .setDescription(`[ ${gameName} ] 를(을) 같이 할 시청자분들을 모집합니다!`)
-          .addFields(
-            {name: "모집 인원수", value: `이번 게임에 모집 인원수는 총 ${gameUserCount}명입니다!`},
-            {name: "모집 종료 기간", value: `이번 게임에 모집 종료 기간은 ${gameEndDate} 11시 59분 59초까지 입니다!`}
-          )
-          .setTimestamp()
 
-        const newGame = await GameOpens.create({
-          gameType: gameName,
-          gameMaxUserCount: gameUserCount,
-          gameStopGameOpening: date,
-          
-        });
-
-        console.log(newGame)
-
-        const response = await interaction.reply({embeds: [embed], files: [file], components: [row]})
-
-        try{
-          const confirm = await response.awaitMessageComponent()
-
-          if (confirm.customId === 'join') {
-            await confirm.reply({content: "버튼을 누름!", ephemeral: true})
+        const newGame = await prisma.gameOpens.create({
+          data: {
+            game_type: gameName,
+            game_maxUserCount : gameUserCount,
+            game_stopGameOpening: date
           }
-        } catch(e) {
+        }).then((r) => {
+          game_id = r.game_id
+        })
+
+        try {
+          const newGameDoc = await prisma.gameOpens.findUnique({
+            where: {
+              game_id: game_id
+            }
+          })
+
+          const embed = new EmbedBuilder()
+            .setColor('Random')
+            .setTitle("모집 안내")
+            .setThumbnail(`attachment://${randomFile}`)
+            .setDescription(`[ ${newGameDoc.game_type} ] 를(을) 같이 할 시청자분들을 모집합니다!`)
+            .addFields(
+              {name: "모집 인원수", value: `이번 게임에 모집 인원수는 총 ${newGameDoc.game_maxUserCount}명입니다!`},
+              {name: "모집 종료 기간", value: `이번 게임에 모집 종료 기간은 ${dayjs(newGameDoc.game_stopGameOpening).format('YYYY-MM-DD')} 11시 59분 59초까지 입니다!`}
+            )
+            .setTimestamp()
+
+          const response = await interaction.reply({embeds: [embed], files: [file], components: [row]})
+
+          try{
+            const collector = response.createMessageComponentCollector({
+              componentType: ComponentType.Button
+            })
+
+            const job = schedule.scheduleJob({second: 59, hour: 23, minute: 59, dayOfMonth: date.get('date'), month: date.get('month')}, () => {
+              collector.stop()
+            })
+
+            collector.on('collect', async i => {
+              if (i.customId === "join"){
+                const newGameCurrDoc = await prisma.currentGameUsers.findUnique({
+                  where: {
+                    gameOpensGame_id: game_id
+                  }
+                })
+
+                if (newGameCurrDoc === null) {
+                  await i.reply({content: `참여 신청이 완료되었습니다.`, ephemeral: true})
+                  await prisma.currentGameUsers.create({
+                    data: {
+                      current_users: [ i.user.id ],
+                      gameOpensGame_id: newGameDoc.game_id
+                    }
+                  })
+                } else {
+                  const userList = await prisma.currentGameUsers.findMany({
+                    where: {
+                      gameOpensGame_id: newGameDoc.game_id
+                    },
+                    select: {
+                      current_users: true
+                    }
+                  })
+
+                  if (userList[0].current_users.includes(i.user.id) !== false) {
+                    const newData = userList[0].current_users
+                    const findIndex = newData.indexOf(i.user.id)
+                    if (findIndex > -1) {
+                      newData.splice(findIndex, 1);
+                    }
+
+                    await prisma.currentGameUsers.update({
+                      where: {
+                        gameOpensGame_id: newGameDoc.game_id
+                      },
+                      data: {
+                        current_users: newData
+                      }
+                    })
+                    await i.reply({content: "참여 취소가 완료 되었습니다.", ephemeral: true})
+                  } else {
+                    const newData = userList[0].current_users
+                    newData.push(i.user.id)
+
+                    await prisma.currentGameUsers.update({
+                      where: {
+                        gameOpensGame_id: newGameDoc.game_id
+                      },
+                      data: {
+                        current_users: newData
+                      }
+                    })
+                    await i.reply({content: `참여 신청이 완료되었습니다.`, ephemeral: true})
+                  }
+                }
+              } else if (i.customId === 'test') {
+                collector.stop()
+              }
+            })
+
+            collector.on('end', async i => {
+              await response.delete()
+              const userList = await prisma.currentGameUsers.findMany({
+                where: {
+                  gameOpensGame_id: newGameDoc.game_id
+                },
+                select: {
+                  current_users: true
+                }
+              })
+
+              let newUserList = [];
+
+              if (newGameDoc.game_maxUserCount < userList[0].current_users.length) {
+                const shaffleArray = userList[0].current_users.sort(() => 0.5 - Math.random())
+                newUserList = shaffleArray.slice(0, newGameDoc.game_maxUserCount)
+              } else {
+                newUserList = userList[0].current_users
+              }
+
+              const user = newUserList.map(i => `<@${i}>`)
+
+              if (userList[0].current_users.length > 0) {
+                const endEmbed = new EmbedBuilder()
+                  .setColor('Random')
+                  .setTitle("모집이 종료되었습니다")
+                  .setDescription(`[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`)
+                  .addFields(
+                    {
+                      name: "모집 인원 결과",
+                      value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`
+                    },
+                    { name: "이번 참여자는 두구두구...", value: `${user.map(i => `${i}`)} 입니다!` }
+                  )
+                  .setTimestamp()
+
+                await prisma.realGames.create({
+                  data: {
+                    gameOpensGame_id: newGameDoc.game_id,
+                    real_users: newUserList
+                  }
+                })
+
+                await interaction.followUp({ embeds: [endEmbed] })
+              } else {
+                const endEmbed = new EmbedBuilder()
+                  .setColor('Random')
+                  .setTitle("모집이 종료되었습니다")
+                  .setDescription(`[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`)
+                  .addFields(
+                    {
+                      name: "모집 인원 결과",
+                      value: `${userList[0].current_users.length}명 입니다!`
+                    },
+                    { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
+                  )
+                  .setTimestamp()
+
+                await interaction.followUp({ embeds: [endEmbed] })
+              }
+            })
+          } catch (e) {
+            console.log(e)
+          }
+        } catch (e) {
           console.log(e)
-          await interaction.editReply({content: "ERROR", components: []})
         }
       }
     }
