@@ -31,7 +31,7 @@ module.exports = {
           option
             .setName('종료날짜')
             .setDescription(
-              '모집 종료 날짜를 다음과 같은 식으로 넣어주세요. 예시 )2023/09/23',
+              '모집 종료 날짜를 다음과 같은 식으로 넣어주세요. 예시) 2023/09/23',
             )
             .setRequired(true),
         ))
@@ -93,7 +93,7 @@ module.exports = {
             .setDescription(`[ ${newGameDoc.game_type} ] 를(을) 같이 할 시청자분들을 모집합니다!`)
             .addFields(
               {name: "모집 인원수", value: `이번 게임에 모집 인원수는 총 ${newGameDoc.game_maxUserCount}명입니다!`},
-              {name: "모집 종료 기간", value: `이번 게임에 모집 종료 기간은 ${dayjs(newGameDoc.game_stopGameOpening).format('YYYY-MM-DD')} 11시 59분 59초까지 입니다!`}
+              {name: "모집 종료 기간", value: `이번 게임에 모집 종료 기간은 ${dayjs(newGameDoc.game_stopGameOpening).format('YYYY-MM-DD')} 오후 11시 59분 59초까지 입니다!`}
             )
             .setTimestamp()
 
