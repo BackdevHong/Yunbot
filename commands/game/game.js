@@ -137,7 +137,7 @@ module.exports = {
             const job = schedule.scheduleJob(
               {
                 hour: 2,
-                minute: 34,
+                minute: 39,
                 dayOfMonth: date.get("date"),
                 month: date.get("month"),
               },
@@ -232,50 +232,7 @@ module.exports = {
 
               let newUserList = [];
 
-              if (
-                newGameDoc.game_maxUserCount < userList[0].current_users.length
-              ) {
-                const shaffleArray = userList[0].current_users.sort(
-                  () => 0.5 - Math.random()
-                );
-                newUserList = shaffleArray.slice(
-                  0,
-                  newGameDoc.game_maxUserCount
-                );
-              } else {
-                newUserList = userList[0].current_users;
-              }
-
-              const user = newUserList.map((i) => `<@${i}>`);
-
-              if (userList[0].current_users.length > 0) {
-                const endEmbed = new EmbedBuilder()
-                  .setColor("Random")
-                  .setTitle("모집이 종료되었습니다")
-                  .setDescription(
-                    `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
-                  )
-                  .addFields(
-                    {
-                      name: "모집 인원 결과",
-                      value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
-                    },
-                    {
-                      name: "이번 참여자는 두구두구...",
-                      value: `${user.map((i) => `${i}`)} 입니다!`,
-                    }
-                  )
-                  .setTimestamp();
-
-                await prisma.realGames.create({
-                  data: {
-                    gameOpensGame_id: newGameDoc.game_id,
-                    real_users: newUserList,
-                  },
-                });
-
-                await interaction.followUp({ embeds: [endEmbed] });
-              } else {
+              if (userList[0].current_users.length < 0) {
                 const endEmbed = new EmbedBuilder()
                   .setColor("Random")
                   .setTitle("모집이 종료되었습니다")
@@ -293,6 +250,49 @@ module.exports = {
 
                 await interaction.followUp({ embeds: [endEmbed] });
               }
+
+              if (
+                newGameDoc.game_maxUserCount < userList[0].current_users.length
+              ) {
+                const shaffleArray = userList[0].current_users.sort(
+                  () => 0.5 - Math.random()
+                );
+                newUserList = shaffleArray.slice(
+                  0,
+                  newGameDoc.game_maxUserCount
+                );
+              } else {
+                newUserList = userList[0].current_users;
+              }
+
+              const user = newUserList.map((i) => `<@${i}>`);
+
+              const endEmbed = new EmbedBuilder()
+                .setColor("Random")
+                .setTitle("모집이 종료되었습니다")
+                .setDescription(
+                  `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
+                )
+                .addFields(
+                  {
+                    name: "모집 인원 결과",
+                    value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
+                  },
+                  {
+                    name: "이번 참여자는 두구두구...",
+                    value: `${user.map((i) => `${i}`)} 입니다!`,
+                  }
+                )
+                .setTimestamp();
+
+              await prisma.realGames.create({
+                data: {
+                  gameOpensGame_id: newGameDoc.game_id,
+                  real_users: newUserList,
+                },
+              });
+
+              await interaction.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
             console.log(e);
