@@ -251,6 +251,8 @@ module.exports = {
                 await interaction.followUp({ embeds: [endEmbed] });
               }
 
+              console.log(userList[0].current_users.length);
+
               if (
                 newGameDoc.game_maxUserCount < userList[0].current_users.length
               ) {
