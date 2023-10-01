@@ -53,7 +53,7 @@ module.exports = {
    */
   async execute(interaction) {
     if (interaction.options.getSubcommand() === "모집") {
-      console.log(dayjs(now()));
+      console.log(dayjs(Date.now()));
       //   const gameName = interaction.options.getString('게임이름')
       //   const gameUserCount = interaction.options.getInteger('인원수')
       //   const gameEndDate = interaction.options.getString("종료날짜")
