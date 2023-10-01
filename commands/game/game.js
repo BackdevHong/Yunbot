@@ -136,8 +136,8 @@ module.exports = {
 
             const job = schedule.scheduleJob(
               {
-                hour: 2,
-                minute: 43,
+                hour: 23,
+                minute: 59,
                 dayOfMonth: date.get("date"),
                 month: date.get("month"),
               },
