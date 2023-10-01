@@ -137,7 +137,7 @@ module.exports = {
             const job = schedule.scheduleJob(
               {
                 hour: 2,
-                minute: 39,
+                minute: 43,
                 dayOfMonth: date.get("date"),
                 month: date.get("month"),
               },
@@ -250,8 +250,6 @@ module.exports = {
 
                 await interaction.followUp({ embeds: [endEmbed] });
               }
-
-              console.log(userList[0].current_users.length);
 
               if (
                 newGameDoc.game_maxUserCount < userList[0].current_users.length
