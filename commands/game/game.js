@@ -13,6 +13,9 @@ const path = require("node:path");
 const dayjs = require("dayjs");
 const { PrismaClient } = require("@prisma/client");
 const schedule = require("node-schedule");
+let rule = new schedule.RecurrenceRule();
+
+rule.tz = "Asia/Seoul";
 
 const prisma = new PrismaClient();
 
@@ -118,7 +121,7 @@ module.exports = {
                 name: "모집 종료 기간",
                 value: `이번 게임에 모집 종료 기간은 ${dayjs(
                   newGameDoc.game_stopGameOpening
-                ).format("YYYY-MM-DD")} 오후 11시 59분 59초까지 입니다!`,
+                ).format("YYYY-MM-DD")} 오후 11시 30분 까지 입니다!`,
               }
             )
             .setTimestamp();
@@ -134,12 +137,15 @@ module.exports = {
               componentType: ComponentType.Button,
             });
 
+            rule.second = 0;
+            rule.hour = 23;
+            rule.minute = 30;
+            rule.month = date.get("month");
+
             const job = schedule.scheduleJob(
               {
-                hour: 23,
-                minute: 59,
+                rule: rule,
                 dayOfMonth: date.get("date"),
-                month: date.get("month"),
               },
               () => {
                 collector.stop();
