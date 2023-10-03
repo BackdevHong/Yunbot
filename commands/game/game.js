@@ -139,7 +139,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 6,
-                minute: 18,
+                minute: 23,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -147,8 +147,6 @@ module.exports = {
                 collector.stop();
               }
             );
-
-            console.log(job)
 
             collector.on("collect", async (i) => {
               if (i.customId === "join") {
