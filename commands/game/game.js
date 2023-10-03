@@ -12,10 +12,8 @@ const path = require("node:path");
 const dayjs = require("dayjs");
 const { PrismaClient } = require("@prisma/client");
 const schedule = require("node-schedule");
-let rule = new schedule.RecurrenceRule();
 const { ButtonStyle } = require('discord-api-types/v10')
 
-rule.tz = "Asia/Seoul";
 
 const prisma = new PrismaClient();
 
@@ -137,14 +135,12 @@ module.exports = {
               componentType: ComponentType.Button,
             });
 
-            rule.second = 0;
-            rule.hour = 6;
-            rule.minute = 15;
-            rule.month = date.get("month");
-
             const job = schedule.scheduleJob(
               {
-                rule: rule,
+                second: 0,
+                hour: 6,
+                minute: 18,
+                month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
               () => {
