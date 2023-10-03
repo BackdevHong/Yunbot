@@ -4,9 +4,8 @@ const {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle,
   AttachmentBuilder,
-  ComponentType,
+  ComponentType
 } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -14,6 +13,7 @@ const dayjs = require("dayjs");
 const { PrismaClient } = require("@prisma/client");
 const schedule = require("node-schedule");
 let rule = new schedule.RecurrenceRule();
+const { ButtonStyle } = require('discord-api-types/v10')
 
 rule.tz = "Asia/Seoul";
 
@@ -138,8 +138,8 @@ module.exports = {
             });
 
             rule.second = 0;
-            rule.hour = 23;
-            rule.minute = 30;
+            rule.hour = 6;
+            rule.minute = 15;
             rule.month = date.get("month");
 
             const job = schedule.scheduleJob(
@@ -151,6 +151,8 @@ module.exports = {
                 collector.stop();
               }
             );
+
+            console.log(job)
 
             collector.on("collect", async (i) => {
               if (i.customId === "join") {
