@@ -5,15 +5,14 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   AttachmentBuilder,
-  ComponentType
+  ComponentType,
 } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
 const dayjs = require("dayjs");
 const { PrismaClient } = require("@prisma/client");
 const schedule = require("node-schedule");
-const { ButtonStyle } = require('discord-api-types/v10')
-
+const { ButtonStyle } = require("discord-api-types/v10");
 
 const prisma = new PrismaClient();
 
@@ -139,7 +138,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 23,
-                minute: 0,
+                minute: 37,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -222,7 +221,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              await response.delete();
+              response.delete();
               const userList = await prisma.currentGameUsers.findMany({
                 where: {
                   gameOpensGame_id: newGameDoc.game_id,
