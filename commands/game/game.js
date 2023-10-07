@@ -141,7 +141,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 43,
+                minute: 44,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -222,7 +222,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = i.client.channels.cache.find(process.env.CHANNEL);
+              const channel = i.client
 
               const userList = await prisma.currentGameUsers.findMany({
                 where: {
