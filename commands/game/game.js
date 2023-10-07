@@ -231,76 +231,76 @@ module.exports = {
             collector.on("end", async (i) => {
               const channel = interaction.client
 
-              const userList = await prisma.currentGameUsers.findMany({
-                where: {
-                  gameOpensGame_id: newGameDoc.game_id,
-                },
-                select: {
-                  current_users: true,
-                },
-              });
+              // const userList = await prisma.currentGameUsers.findMany({
+              //   where: {
+              //     gameOpensGame_id: newGameDoc.game_id,
+              //   },
+              //   select: {
+              //     current_users: true,
+              //   },
+              // });
 
-              let newUserList = [];
+              // let newUserList = [];
 
-              if (userList[0].current_users.length < 0) {
-                const endEmbed = new EmbedBuilder()
-                  .setColor("Random")
-                  .setTitle("모집이 종료되었습니다")
-                  .setDescription(
-                    `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
-                  )
-                  .addFields(
-                    {
-                      name: "모집 인원 결과",
-                      value: `${userList[0].current_users.length}명 입니다!`,
-                    },
-                    { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
-                  )
-                  .setTimestamp();
-                console.log(channel);
-                // await response.channel.send({ embeds: endEmbed });
-              }
+              // if (userList[0].current_users.length < 0) {
+              //   const endEmbed = new EmbedBuilder()
+              //     .setColor("Random")
+              //     .setTitle("모집이 종료되었습니다")
+              //     .setDescription(
+              //       `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
+              //     )
+              //     .addFields(
+              //       {
+              //         name: "모집 인원 결과",
+              //         value: `${userList[0].current_users.length}명 입니다!`,
+              //       },
+              //       { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
+              //     )
+              //     .setTimestamp();
+              //   console.log(channel);
+              //   // await response.channel.send({ embeds: endEmbed });
+              // }
 
-              if (
-                newGameDoc.game_maxUserCount < userList[0].current_users.length
-              ) {
-                const shaffleArray = userList[0].current_users.sort(
-                  () => 0.5 - Math.random()
-                );
-                newUserList = shaffleArray.slice(
-                  0,
-                  newGameDoc.game_maxUserCount
-                );
-              } else {
-                newUserList = userList[0].current_users;
-              }
+              // if (
+              //   newGameDoc.game_maxUserCount < userList[0].current_users.length
+              // ) {
+              //   const shaffleArray = userList[0].current_users.sort(
+              //     () => 0.5 - Math.random()
+              //   );
+              //   newUserList = shaffleArray.slice(
+              //     0,
+              //     newGameDoc.game_maxUserCount
+              //   );
+              // } else {
+              //   newUserList = userList[0].current_users;
+              // }
 
-              const user = newUserList.map((i) => `<@${i}>`);
+              // const user = newUserList.map((i) => `<@${i}>`);
 
-              const endEmbed = new EmbedBuilder()
-                .setColor("Random")
-                .setTitle("모집이 종료되었습니다")
-                .setDescription(
-                  `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
-                )
-                .addFields(
-                  {
-                    name: "모집 인원 결과",
-                    value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
-                  },
-                  {
-                    name: "이번 참여자는 두구두구...",
-                    value: `${user.map((i) => `${i}`)} 입니다!`,
-                  }
-                )
-                .setTimestamp();
+              // const endEmbed = new EmbedBuilder()
+              //   .setColor("Random")
+              //   .setTitle("모집이 종료되었습니다")
+              //   .setDescription(
+              //     `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
+              //   )
+              //   .addFields(
+              //     {
+              //       name: "모집 인원 결과",
+              //       value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
+              //     },
+              //     {
+              //       name: "이번 참여자는 두구두구...",
+              //       value: `${user.map((i) => `${i}`)} 입니다!`,
+              //     }
+              //   )
+              //   .setTimestamp();
 
-              await prisma.realGames.create({
-                data: {
-                  gameOpensGame_id: newGameDoc.game_id,
-                  real_users: newUserList,
-                },
-              });
+              // await prisma.realGames.create({
+              //   data: {
+              //     gameOpensGame_id: newGameDoc.game_id,
+              //     real_users: newUserList,
+              //   },
+              // });
               console.log(channel);
             });
           } catch (e) {
