@@ -61,7 +61,7 @@ module.exports = {
       const gameUserCount = interaction.options.getInteger("인원수");
       const gameEndDate = interaction.options.getString("종료날짜");
       let game_id;
-      const channel = interaction.guild.channels.cache.get(process.env.CHANNEL);
+      const channel = interaction
 
       console.log(channel)
 
