@@ -233,7 +233,8 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              interaction.deferReply();
+              interaction.deleteReply();
+              interaction.followUp("테스트다제")
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
