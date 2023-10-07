@@ -83,8 +83,13 @@ module.exports = {
           .setCustomId("join")
           .setLabel("참여")
           .setStyle(ButtonStyle.Primary);
+        
+        const test = new ButtonBuilder()
+          .setCustomId("test")
+          .setLabel("테스트버튼")
+          .setStyle(ButtonStyle.Primary);
 
-        const row = new ActionRowBuilder().addComponents(join);
+        const row = new ActionRowBuilder().addComponents(join, test);
 
         const newGame = await prisma.gameOpens
           .create({
@@ -137,18 +142,18 @@ module.exports = {
               componentType: ComponentType.Button,
             });
 
-            const job = schedule.scheduleJob(
-              {
-                second: 0,
-                hour: 2,
-                minute: 45,
-                month: date.get("month"),
-                dayOfMonth: date.get("date"),
-              },
-              () => {
-                collector.stop();
-              }
-            );
+            // const job = schedule.scheduleJob(
+            //   {
+            //     second: 0,
+            //     hour: 2,
+            //     minute: 45,
+            //     month: date.get("month"),
+            //     dayOfMonth: date.get("date"),
+            //   },
+            //   () => {
+            //     collector.stop();
+            //   }
+            // );
 
             collector.on("collect", async (i) => {
               if (i.customId === "join") {
@@ -218,11 +223,13 @@ module.exports = {
                     });
                   }
                 }
+              } else if (i.customId === "test") {
+                collector.stop();
               }
             });
 
             collector.on("end", async (i) => {
-              const channel = i.client
+              const channel = interaction.client
 
               const userList = await prisma.currentGameUsers.findMany({
                 where: {
