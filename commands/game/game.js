@@ -138,7 +138,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 19,
+                minute: 20,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -289,7 +289,7 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-              console.log(interaction.channels);
+              console.log(response);
               // await interaction.channel({ embeds: endEmbed });
             });
           } catch (e) {
