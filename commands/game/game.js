@@ -55,7 +55,7 @@ module.exports = {
    * @param {import('discord.js').Interaction} interaction
    *
    */
-  async execute(interaction) {
+  async execute(interaction, client) {
     if (interaction.options.getSubcommand() === "모집") {
       const gameName = interaction.options.getString("게임이름");
       const gameUserCount = interaction.options.getInteger("인원수");
@@ -230,7 +230,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = response.interaction.member.guild.channel;
+              const channel = client
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
