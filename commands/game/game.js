@@ -138,7 +138,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 3,
+                minute: 5,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -246,7 +246,7 @@ module.exports = {
                   )
                   .setTimestamp();
 
-                await response.followUp({ embeds: endEmbed });
+                await interaction.followUp({ embeds: endEmbed });
               }
 
               if (
@@ -289,8 +289,8 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-              console.log(i);
-              await response.followUp({ embeds: [endEmbed] });
+              console.log(interaction);
+              await interaction.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
             console.log(e);
