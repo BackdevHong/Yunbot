@@ -55,12 +55,13 @@ module.exports = {
    * @param {import('discord.js').Interaction} interaction
    *
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     if (interaction.options.getSubcommand() === "모집") {
       const gameName = interaction.options.getString("게임이름");
       const gameUserCount = interaction.options.getInteger("인원수");
       const gameEndDate = interaction.options.getString("종료날짜");
       let game_id;
+      const channel = interaction.guild.channels.cache.get(process.env.CHANNEL);
 
       if (gameName && gameUserCount && gameEndDate) {
         const date = dayjs(gameEndDate);
@@ -230,7 +231,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-
+              await channel.send({ content: "테스트" });
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
               //     gameOpensGame_id: newGameDoc.game_id,
@@ -301,7 +302,7 @@ module.exports = {
               //     real_users: newUserList,
               //   },
               // });
-              i.channel.send({content: "xptmxm"})
+              i.channel.send({ content: "xptmxm" });
             });
           } catch (e) {
             console.log(e);
