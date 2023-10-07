@@ -61,9 +61,6 @@ module.exports = {
       const gameUserCount = interaction.options.getInteger("인원수");
       const gameEndDate = interaction.options.getString("종료날짜");
       let game_id;
-      const channel = interaction
-
-      console.log(channel)
 
       if (gameName && gameUserCount && gameEndDate) {
         const date = dayjs(gameEndDate);
@@ -89,8 +86,8 @@ module.exports = {
           .setStyle(ButtonStyle.Primary);
 
         const test = new ButtonBuilder()
-          .setCustomId("test")
-          .setLabel("테스트버튼")
+          .setCustomId("end")
+          .setLabel("모집종료(윤성님만 가능)")
           .setStyle(ButtonStyle.Primary);
 
         const row = new ActionRowBuilder().addComponents(join, test);
@@ -130,7 +127,7 @@ module.exports = {
                 name: "모집 종료 기간",
                 value: `이번 게임에 모집 종료 기간은 ${dayjs(
                   newGameDoc.game_stopGameOpening
-                ).format("YYYY-MM-DD")} 오후 2시까지 입니다!`,
+                ).format("YYYY-MM-DD")} 까지 입니다!`,
               }
             )
             .setTimestamp();
@@ -145,19 +142,6 @@ module.exports = {
             const collector = response.createMessageComponentCollector({
               componentType: ComponentType.Button,
             });
-
-            // const job = schedule.scheduleJob(
-            //   {
-            //     second: 0,
-            //     hour: 2,
-            //     minute: 45,
-            //     month: date.get("month"),
-            //     dayOfMonth: date.get("date"),
-            //   },
-            //   () => {
-            //     collector.stop();
-            //   }
-            // );
 
             collector.on("collect", async (i) => {
               if (i.customId === "join") {
@@ -227,86 +211,85 @@ module.exports = {
                     });
                   }
                 }
-              } else if (i.customId === "test") {
-                collector.stop();
+              } else if (i.customId === "end") {
+                console.log(i)
               }
             });
 
             collector.on("end", async (i) => {
               interaction.deleteReply();
-              interaction.followUp("테스트다제")
 
-              // const userList = await prisma.currentGameUsers.findMany({
-              //   where: {
-              //     gameOpensGame_id: newGameDoc.game_id,
-              //   },
-              //   select: {
-              //     current_users: true,
-              //   },
-              // });
+              const userList = await prisma.currentGameUsers.findMany({
+                where: {
+                  gameOpensGame_id: newGameDoc.game_id,
+                },
+                select: {
+                  current_users: true,
+                },
+              });
 
-              // let newUserList = [];
+              let newUserList = [];
 
-              // if (userList[0].current_users.length < 0) {
-              //   const endEmbed = new EmbedBuilder()
-              //     .setColor("Random")
-              //     .setTitle("모집이 종료되었습니다")
-              //     .setDescription(
-              //       `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
-              //     )
-              //     .addFields(
-              //       {
-              //         name: "모집 인원 결과",
-              //         value: `${userList[0].current_users.length}명 입니다!`,
-              //       },
-              //       { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
-              //     )
-              //     .setTimestamp();
-              //   console.log(channel);
-              //   // await response.channel.send({ embeds: endEmbed });
-              // }
+              if (userList[0].current_users.length < 0) {
+                const endEmbed = new EmbedBuilder()
+                  .setColor("Random")
+                  .setTitle("모집이 종료되었습니다")
+                  .setDescription(
+                    `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
+                  )
+                  .addFields(
+                    {
+                      name: "모집 인원 결과",
+                      value: `${userList[0].current_users.length}명 입니다!`,
+                    },
+                    { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
+                  )
+                  .setTimestamp();
+                await interaction.followUp({embeds: embed})
+              }
 
-              // if (
-              //   newGameDoc.game_maxUserCount < userList[0].current_users.length
-              // ) {
-              //   const shaffleArray = userList[0].current_users.sort(
-              //     () => 0.5 - Math.random()
-              //   );
-              //   newUserList = shaffleArray.slice(
-              //     0,
-              //     newGameDoc.game_maxUserCount
-              //   );
-              // } else {
-              //   newUserList = userList[0].current_users;
-              // }
+              if (
+                newGameDoc.game_maxUserCount < userList[0].current_users.length
+              ) {
+                const shaffleArray = userList[0].current_users.sort(
+                  () => 0.5 - Math.random()
+                );
+                newUserList = shaffleArray.slice(
+                  0,
+                  newGameDoc.game_maxUserCount
+                );
+              } else {
+                newUserList = userList[0].current_users;
+              }
 
-              // const user = newUserList.map((i) => `<@${i}>`);
+              const user = newUserList.map((i) => `<@${i}>`);
 
-              // const endEmbed = new EmbedBuilder()
-              //   .setColor("Random")
-              //   .setTitle("모집이 종료되었습니다")
-              //   .setDescription(
-              //     `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
-              //   )
-              //   .addFields(
-              //     {
-              //       name: "모집 인원 결과",
-              //       value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
-              //     },
-              //     {
-              //       name: "이번 참여자는 두구두구...",
-              //       value: `${user.map((i) => `${i}`)} 입니다!`,
-              //     }
-              //   )
-              //   .setTimestamp();
+              const endEmbed = new EmbedBuilder()
+                .setColor("Random")
+                .setTitle("모집이 종료되었습니다")
+                .setDescription(
+                  `[ ${newGameDoc.game_type} ] 모집이 완료되었습니다`
+                )
+                .addFields(
+                  {
+                    name: "모집 인원 결과",
+                    value: `${userList[0].current_users.length}/${newGameDoc.game_maxUserCount} 명입니다!`,
+                  },
+                  {
+                    name: "이번 참여자는 두구두구...",
+                    value: `${user.map((i) => `${i}`)} 입니다!`,
+                  }
+                )
+                .setTimestamp();
 
-              // await prisma.realGames.create({
-              //   data: {
-              //     gameOpensGame_id: newGameDoc.game_id,
-              //     real_users: newUserList,
-              //   },
-              // });
-              // i.channel.send({ content: "xptmxm" });
+              await prisma.realGames.create({
+                data: {
+                  gameOpensGame_id: newGameDoc.game_id,
+                  real_users: newUserList,
+                },
+              });
+
+              await interaction.followUp({embeds: embed})
             });
           } catch (e) {
             console.log(e);
