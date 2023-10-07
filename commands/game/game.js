@@ -229,7 +229,9 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = interaction.guild;
+              const channel = interaction.guild.channels.cache.find(
+                process.env.CHANNEL
+              );
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
