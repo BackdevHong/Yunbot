@@ -63,6 +63,8 @@ module.exports = {
       let game_id;
       const channel = interaction.guild.channels.cache.get(process.env.CHANNEL);
 
+      console.log(channel)
+
       if (gameName && gameUserCount && gameEndDate) {
         const date = dayjs(gameEndDate);
         if (date.format() === "Invalid Date") {
@@ -231,7 +233,6 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              await response.reply("테스트")
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
               //     gameOpensGame_id: newGameDoc.game_id,
