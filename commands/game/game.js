@@ -212,7 +212,7 @@ module.exports = {
                   }
                 }
               } else if (i.customId === "end") {
-                if (!i.member.roles.cache.some((role) => role.id === '1148760949361233942')) {
+                if (!i.member.roles.cache.some((role) => role.name === 'White house')) {
                   i.reply("죄송하지만, 당신은 이 버튼을 사용할 권한이 없습니다.")
                 } 
                 collector.stop()
