@@ -301,7 +301,7 @@ module.exports = {
               //     real_users: newUserList,
               //   },
               // });
-              interaction.channel.send("테스트")
+              i.channel.send({content: "xptmxm"})
             });
           } catch (e) {
             console.log(e);
