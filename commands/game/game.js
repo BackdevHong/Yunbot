@@ -83,7 +83,7 @@ module.exports = {
           .setCustomId("join")
           .setLabel("참여")
           .setStyle(ButtonStyle.Primary);
-        
+
         const test = new ButtonBuilder()
           .setCustomId("test")
           .setLabel("테스트버튼")
@@ -229,7 +229,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = interaction.client
+              const channel = interaction.guild;
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
