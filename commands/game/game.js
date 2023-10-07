@@ -230,7 +230,6 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = client
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
@@ -302,7 +301,7 @@ module.exports = {
               //     real_users: newUserList,
               //   },
               // });
-              console.log(channel);
+              interaction.channel.send("테스트")
             });
           } catch (e) {
             console.log(e);
