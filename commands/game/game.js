@@ -289,7 +289,7 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-              console.log(i.channel);
+              console.log(interaction.channels);
               // await interaction.channel({ embeds: endEmbed });
             });
           } catch (e) {
