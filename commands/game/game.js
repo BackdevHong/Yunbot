@@ -141,7 +141,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 44,
+                minute: 45,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
