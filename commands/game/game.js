@@ -302,7 +302,7 @@ module.exports = {
               //     real_users: newUserList,
               //   },
               // });
-              i.channel.send({ content: "xptmxm" });
+              // i.channel.send({ content: "xptmxm" });
             });
           } catch (e) {
             console.log(e);
