@@ -212,7 +212,7 @@ module.exports = {
                   }
                 }
               } else if (i.customId === "end") {
-                console.log(i)
+                console.log(i.user)
               }
             });
 
