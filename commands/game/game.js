@@ -231,7 +231,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              await channel.send({ content: "테스트" });
+              console.log(channel);
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
               //     gameOpensGame_id: newGameDoc.game_id,
