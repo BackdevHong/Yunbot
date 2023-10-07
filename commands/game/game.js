@@ -14,6 +14,9 @@ const { PrismaClient } = require("@prisma/client");
 const schedule = require("node-schedule");
 const { ButtonStyle } = require("discord-api-types/v10");
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const prisma = new PrismaClient();
 
 module.exports = {
@@ -138,7 +141,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 21,
+                minute: 37,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -219,6 +222,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
+              const channel = await interaction.client.channels.cache.find(process.env.CHANNEL)
               const userList = await prisma.currentGameUsers.findMany({
                 where: {
                   gameOpensGame_id: newGameDoc.game_id,
@@ -244,8 +248,8 @@ module.exports = {
                     },
                     { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
                   )
-                  .setTimestamp();
-
+                  .setTimestamp(); 
+                  console.log(channel)
                 // await response.channel.send({ embeds: endEmbed });
               }
 
@@ -289,8 +293,7 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-              console.log(response);
-              // await interaction.channel({ embeds: endEmbed });
+              console.log(channel)
             });
           } catch (e) {
             console.log(e);
