@@ -138,7 +138,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 5,
+                minute: 11,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -245,8 +245,8 @@ module.exports = {
                     { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
                   )
                   .setTimestamp();
-
-                await interaction.followUp({ embeds: endEmbed });
+                  
+                await interaction.channel.send({ embeds: endEmbed });
               }
 
               if (
@@ -290,7 +290,7 @@ module.exports = {
                 },
               });
               console.log(interaction);
-              await interaction.followUp({ embeds: [endEmbed] });
+              await interaction.channel.send({ embeds: endEmbed });
             });
           } catch (e) {
             console.log(e);
