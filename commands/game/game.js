@@ -245,8 +245,8 @@ module.exports = {
                     { name: "쥬륵..", value: `아쉽지만 다음 게임에 만납시다!` }
                   )
                   .setTimestamp();
-                  
-                await interaction.channel.send({ embeds: endEmbed });
+
+                // await response.channel.send({ embeds: endEmbed });
               }
 
               if (
@@ -289,8 +289,8 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-              console.log(interaction);
-              await interaction.channel.send({ embeds: endEmbed });
+              console.log(interaction.channel);
+              // await interaction.channel({ embeds: endEmbed });
             });
           } catch (e) {
             console.log(e);
