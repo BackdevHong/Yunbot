@@ -212,7 +212,10 @@ module.exports = {
                   }
                 }
               } else if (i.customId === "end") {
-                console.log(i.member.roles)
+                if (!message.member.roles.cache.some((role) => role.id === '1148760949361233942')) {
+                  i.reply("죄송하지만, 당신은 이 버튼을 사용할 권한이 없습니다.")
+                } 
+                collector.stop()
               }
             });
 
