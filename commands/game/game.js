@@ -246,7 +246,7 @@ module.exports = {
                   )
                   .setTimestamp();
 
-                await response.followUp({ embeds: [endEmbed] });
+                  await i.followUp({embeds: endEmbed})
               }
 
               if (
@@ -290,7 +290,7 @@ module.exports = {
                 },
               });
 
-              await response.followUp({ embeds: [endEmbed] });
+              await i.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
             console.log(e);
