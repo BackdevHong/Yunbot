@@ -215,8 +215,6 @@ module.exports = {
                     });
                   }
                 }
-              } else if (i.customId === "test") {
-                collector.stop();
               }
             });
 
@@ -248,7 +246,7 @@ module.exports = {
                   )
                   .setTimestamp();
 
-                await interaction.followUp({ embeds: [endEmbed] });
+                await response.followUp({ embeds: [endEmbed] });
               }
 
               if (
@@ -292,7 +290,7 @@ module.exports = {
                 },
               });
 
-              await interaction.followUp({ embeds: [endEmbed] });
+              await response.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
             console.log(e);
