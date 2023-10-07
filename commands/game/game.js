@@ -137,7 +137,7 @@ module.exports = {
             const job = schedule.scheduleJob(
               {
                 second: 0,
-                hour: 23,
+                hour: 2,
                 minute: 0,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
@@ -246,7 +246,7 @@ module.exports = {
                   )
                   .setTimestamp();
 
-                  await i.followUp({embeds: endEmbed})
+                await i.followUp({ embeds: endEmbed });
               }
 
               if (
@@ -289,7 +289,7 @@ module.exports = {
                   real_users: newUserList,
                 },
               });
-
+              console.log(i);
               await i.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
