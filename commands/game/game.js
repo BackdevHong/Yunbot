@@ -137,7 +137,7 @@ module.exports = {
             const job = schedule.scheduleJob(
               {
                 second: 0,
-                hour: 14,
+                hour: 23,
                 minute: 0,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
@@ -221,8 +221,6 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              console.log(response);
-              response.delete();
               const userList = await prisma.currentGameUsers.findMany({
                 where: {
                   gameOpensGame_id: newGameDoc.game_id,
