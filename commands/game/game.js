@@ -15,6 +15,7 @@ const schedule = require("node-schedule");
 const { ButtonStyle } = require("discord-api-types/v10");
 
 const dotenv = require("dotenv");
+const { channel } = require("node:diagnostics_channel");
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -229,7 +230,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = interaction.guild.channels;
+              const channel = interaction.guild.channels.cache.filter(a => a.id === process.env.CHANNEL);
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
