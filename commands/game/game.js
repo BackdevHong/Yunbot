@@ -230,7 +230,7 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
-              const channel = i
+              const channel = response
 
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
