@@ -233,6 +233,8 @@ module.exports = {
             });
 
             collector.on("end", async (i) => {
+              interaction.deferReply();
+
               // const userList = await prisma.currentGameUsers.findMany({
               //   where: {
               //     gameOpensGame_id: newGameDoc.game_id,
