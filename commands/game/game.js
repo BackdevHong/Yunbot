@@ -118,7 +118,7 @@ module.exports = {
                 name: "모집 종료 기간",
                 value: `이번 게임에 모집 종료 기간은 ${dayjs(
                   newGameDoc.game_stopGameOpening
-                ).format("YYYY-MM-DD")} 오후 11시까지 입니다!`,
+                ).format("YYYY-MM-DD")} 오후 2시까지 입니다!`,
               }
             )
             .setTimestamp();
@@ -137,8 +137,8 @@ module.exports = {
             const job = schedule.scheduleJob(
               {
                 second: 0,
-                hour: 12,
-                minute: 33,
+                hour: 14,
+                minute: 0,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
