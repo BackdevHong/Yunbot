@@ -138,7 +138,7 @@ module.exports = {
               {
                 second: 0,
                 hour: 2,
-                minute: 0,
+                minute: 3,
                 month: date.get("month"),
                 dayOfMonth: date.get("date"),
               },
@@ -246,7 +246,7 @@ module.exports = {
                   )
                   .setTimestamp();
 
-                await i.followUp({ embeds: endEmbed });
+                await response.followUp({ embeds: endEmbed });
               }
 
               if (
@@ -290,7 +290,7 @@ module.exports = {
                 },
               });
               console.log(i);
-              await i.followUp({ embeds: [endEmbed] });
+              await response.followUp({ embeds: [endEmbed] });
             });
           } catch (e) {
             console.log(e);
